@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>   
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd">  
+
+	<changeSet author="mlany" id="CREATE_PROBLEM_SOLVING_TABLE">
+		<createTable tableName="PROBLEM_SOLVING">
+			<column name="ID" type="NUMBER">
+				 <constraints primaryKey="true" primaryKeyName="PK_PROBLEM_SOLVING" nullable="false"/>
+			</column>
+			<column name="PROBLEM_ID" type="NUMBER">
+				 <constraints nullable="false" foreignKeyName="FK_PROBLEM_SOLVING_PROBLEM" references="PROBLEM(ID)"/>
+			</column>
+			<column name="DATASET_ID" type="NUMBER">
+				 <constraints nullable="false" foreignKeyName="FK_PROBLEM_SOLVING_DATASET" references="DATASET(ID)"/>
+			</column>
+			<column name="STATUS" type="VARCHAR2(50 CHAR)">
+				 <constraints nullable="true"/>
+			</column>
+		</createTable>
+	</changeSet>
+
+</databaseChangeLog> 

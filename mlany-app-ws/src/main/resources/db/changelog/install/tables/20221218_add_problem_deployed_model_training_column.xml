@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>   
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd">  
+
+	<changeSet author="mlany" id="ADD_PROBLEM_DEPLOYED_MODEL_TRAINING_COLUMN">
+		<addColumn tableName="PROBLEM">
+			<column name="DEPLOYED_MODEL_FROM_TRAINING_ID" type="NUMBER">
+				 <constraints nullable="true" foreignKeyName="FK_PROBLEM_MODEL_TRAINING" references="MODEL_TRAINING(ID)"/>
+			</column>
+		</addColumn>
+	</changeSet>
+
+</databaseChangeLog>

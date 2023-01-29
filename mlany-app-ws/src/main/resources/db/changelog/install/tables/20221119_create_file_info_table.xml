@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>   
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd">  
+
+	<changeSet author="mlany" id="CREATE_FILE_INFO_TABLE">
+		<createTable tableName="FILE_INFO">
+			<column name="GENERATED_ID" type="NUMBER">
+				 <constraints primaryKey="true" primaryKeyName="PK_FILE_INFO" nullable="false"/>
+			</column>
+			<column name="PATH" type="VARCHAR2(255 CHAR)">
+				 <constraints nullable="false"/>
+			</column>
+			<column name="NAME" type="VARCHAR2(150 CHAR)">
+				 <constraints nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
+
+</databaseChangeLog> 
