@@ -32,13 +32,13 @@ public class Problem extends MlanyEntity implements Beanable<ProblemBean> {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "NAME", length = 50, nullable = true)
+	@Column(name = "NAME", length = 50, nullable = false)
 	private String name;
 
 	@Column(name = "TYPE", length = 50, nullable = true)
 	private String type;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "linkedProblem", orphanRemoval = true)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "linkedProblem", orphanRemoval = false)
 	private List<Dataset> linkedDatasets = new ArrayList<>();
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "problem", orphanRemoval = true)

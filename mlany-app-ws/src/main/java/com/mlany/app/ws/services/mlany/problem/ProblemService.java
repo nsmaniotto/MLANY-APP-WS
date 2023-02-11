@@ -13,6 +13,7 @@ import com.mlany.app.persistence.entity.enumeration.problem.ProblemTypeEnum;
 import com.mlany.app.persistence.entity.mlany.dataset.Dataset;
 import com.mlany.app.persistence.entity.mlany.model.ModelTraining;
 import com.mlany.app.persistence.entity.mlany.problem.Problem;
+import com.mlany.app.persistence.repository.mlany.dataset.DatasetRepository;
 import com.mlany.app.persistence.repository.mlany.problem.ProblemRepository;
 import com.mlany.app.ws.bean.mlany.problem.ProblemBean;
 
@@ -24,16 +25,32 @@ public class ProblemService {
 	/* ============= REPOSITORIES ============= */
 
 	@Autowired
+	private DatasetRepository datasetRepository;
+
+	@Autowired
 	private ProblemRepository problemRepository;
 
 	@Transactional
-	public Problem createProblem(ProblemBean problemBean) {
-		Problem problem = new Problem();
+	public Problem save(ProblemBean problemBean) {
+		Problem problem = problemBean.getId() != null
+				? problemRepository.findById(problemBean.getId()).orElse(new Problem())
+				: new Problem();
 
 		problem.setName(problemBean.getName());
 
 		Optional<ProblemTypeEnum> problemTypeEnum = ProblemTypeEnum.findProblemTypeEnumByLabel(problemBean.getType());
 		problem.setType(problemTypeEnum.isPresent() ? problemTypeEnum.get().toString() : null);
+
+		List<Dataset> linkedDatasets = new ArrayList<>();
+		problemBean.getLinkedDatasetIds().stream().forEach(datasetId -> {
+			Optional<Dataset> optionalDataset = datasetRepository.findById(datasetId);
+			if (optionalDataset.isPresent()) {
+				Dataset dataset = optionalDataset.get();
+				dataset.setLinkedProblem(problem);
+				linkedDatasets.add(datasetRepository.save(dataset));
+			}
+		});
+		problem.setLinkedDatasets(linkedDatasets);
 
 		return problemRepository.save(problem);
 	}

@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mlany.app.ws.services.mlany.problem.ProblemService;
 import com.mlany.app.persistence.entity.Beanables;
 import com.mlany.app.persistence.entity.mlany.dataset.Dataset;
 import com.mlany.app.persistence.entity.mlany.problem.Problem;
 import com.mlany.app.ws.bean.mlany.dataset.DatasetBean;
 import com.mlany.app.ws.bean.mlany.problem.ProblemBean;
+import com.mlany.app.ws.services.mlany.problem.ProblemService;
 
 @RestController
 @RequestMapping("problem")
@@ -25,9 +25,9 @@ public class ProblemController {
 	@Autowired
 	private ProblemService problemService;
 
-	@PostMapping(value = "create")
-	public Long createProblem(@RequestBody ProblemBean problemBean) {
-		return problemService.createProblem(problemBean).getId();
+	@PostMapping(value = "save")
+	public ProblemBean save(@RequestBody ProblemBean problemBean) {
+		return problemService.save(problemBean).toBean();
 	}
 
 	@GetMapping(value = "{id}")

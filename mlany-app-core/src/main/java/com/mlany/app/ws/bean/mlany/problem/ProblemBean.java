@@ -20,6 +20,7 @@ public class ProblemBean implements Serializable, AbstractBean {
 	private Long id;
 	private String name;
 	private String type;
+	private List<Long> linkedDatasetIds;
 	private List<ProblemSolvingBean> problemSolvings;
 	private ModelTrainingBean deployedModelFromTraining;
 	private String endPoint;

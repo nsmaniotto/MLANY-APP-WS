@@ -17,6 +17,6 @@ public enum ProblemTypeEnum {
 
 	public static Optional<ProblemTypeEnum> findProblemTypeEnumByLabel(String label) {
 		return Arrays.asList(ProblemTypeEnum.values()).stream()
-				.filter(problemTypeEnum -> label.equals(problemTypeEnum.getLabel())).findFirst();
+				.filter(problemTypeEnum -> problemTypeEnum.getLabel().equals(label)).findFirst();
 	}
 }
