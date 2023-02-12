@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mlany.app.persistence.entity.enumeration.problem.ProblemTypeEnum;
+import com.mlany.app.persistence.entity.enumeration.problem.ProblemSolvingTypeEnum;
 import com.mlany.app.persistence.entity.mlany.dataset.Dataset;
 import com.mlany.app.persistence.entity.mlany.model.ModelTraining;
 import com.mlany.app.persistence.entity.mlany.problem.Problem;
@@ -37,9 +37,6 @@ public class ProblemService {
 				: new Problem();
 
 		problem.setName(problemBean.getName());
-
-		Optional<ProblemTypeEnum> problemTypeEnum = ProblemTypeEnum.findProblemTypeEnumByLabel(problemBean.getType());
-		problem.setType(problemTypeEnum.isPresent() ? problemTypeEnum.get().toString() : null);
 
 		List<Dataset> linkedDatasets = new ArrayList<>();
 		problemBean.getLinkedDatasetIds().stream().forEach(datasetId -> {
@@ -77,7 +74,7 @@ public class ProblemService {
 
 	public List<String> getProblemTypeLabels() {
 		return new ArrayList<>(
-				Arrays.asList(ProblemTypeEnum.values()).stream().map(ProblemTypeEnum::getLabel).toList());
+				Arrays.asList(ProblemSolvingTypeEnum.values()).stream().map(ProblemSolvingTypeEnum::getLabel).toList());
 	}
 
 	public Long updateDeployedModelFromTraining(Long problemId, ModelTraining modelTraining) {

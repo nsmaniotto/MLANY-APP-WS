@@ -9,18 +9,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mlany.app.ws.services.common.filer.FilerService;
-import com.mlany.app.ws.services.external.ExternalMlanyMlService;
-import com.mlany.app.ws.services.mlany.problem.ProblemService;
-import com.mlany.app.ws.services.mlany.problem.ProblemSolvingService;
 import com.mlany.app.persistence.entity.enumeration.model.ModelFamilyEnum;
 import com.mlany.app.persistence.entity.enumeration.model.ModelTrainingStatusEnum;
-import com.mlany.app.persistence.entity.enumeration.problem.ProblemTypeEnum;
+import com.mlany.app.persistence.entity.enumeration.problem.ProblemSolvingTypeEnum;
 import com.mlany.app.persistence.entity.mlany.model.Model;
 import com.mlany.app.persistence.entity.mlany.model.ModelTraining;
 import com.mlany.app.persistence.entity.mlany.problem.ProblemSolving;
 import com.mlany.app.persistence.repository.mlany.model.ModelRepository;
 import com.mlany.app.persistence.repository.mlany.model.ModelTrainingRepository;
+import com.mlany.app.ws.services.common.filer.FilerService;
+import com.mlany.app.ws.services.external.ExternalMlanyMlService;
+import com.mlany.app.ws.services.mlany.problem.ProblemService;
+import com.mlany.app.ws.services.mlany.problem.ProblemSolvingService;
 
 @Service
 public class ModelTrainingService {
@@ -75,12 +75,11 @@ public class ModelTrainingService {
 		return updatedProblemId;
 	}
 
-	public List<ModelTraining> generateTrainings(ProblemSolving problemSolving) {
+	public List<ModelTraining> generateTrainings(ProblemSolving problemSolving,
+			ProblemSolvingTypeEnum problemSolvingTypeEnum) {
 		List<ModelTraining> generatedTrainings = new ArrayList<>();
 
-		ProblemTypeEnum problemTypeEnum = ProblemTypeEnum.valueOf(problemSolving.getProblem().getType());
-
-		switch (problemTypeEnum) {
+		switch (problemSolvingTypeEnum) {
 		case MULTI_CLASSIFICATION:
 			generatedTrainings.addAll(generateMultiClassClassificationTraining());
 			break;

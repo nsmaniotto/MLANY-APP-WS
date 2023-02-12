@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mlany.app.persistence.entity.mlany.dataset.DatasetColumn;
-import com.mlany.app.persistence.entity.mlany.problem.ProblemSolving;
 import com.mlany.app.persistence.entity.mlany.problem.ProblemSolvingColumn;
 import com.mlany.app.persistence.repository.mlany.problem.ProblemSolvingColumnRepository;
+import com.mlany.app.persistence.repository.mlany.problem.ProblemSolvingRepository;
 import com.mlany.app.ws.bean.mlany.common.ColumnRawBean;
+import com.mlany.app.ws.bean.mlany.problem.ProblemSolvingColumnBean;
 
 @Service
 public class ProblemSolvingColumnService {
@@ -23,15 +23,18 @@ public class ProblemSolvingColumnService {
 	@Autowired
 	private ProblemSolvingColumnRepository problemSolvingColumnRepository;
 
+	@Autowired
+	private ProblemSolvingRepository problemSolvingRepository;
+
 	@Transactional
-	public ProblemSolvingColumn createCopyFromDatasetColumn(ProblemSolving problemSolving,
-			DatasetColumn datasetColumn) {
+	public ProblemSolvingColumn save(ProblemSolvingColumnBean problemSolvingColumnBean) {
 		ProblemSolvingColumn problemSolvingColumn = new ProblemSolvingColumn();
 
-		problemSolvingColumn.setProblemSolving(problemSolving);
-		problemSolvingColumn.setName(datasetColumn.getName());
-		problemSolvingColumn.setType(datasetColumn.getType());
-		problemSolvingColumn.setInputOutput(datasetColumn.getInputOutput());
+		problemSolvingColumn.setProblemSolving(
+				problemSolvingRepository.findById(problemSolvingColumnBean.getProblemSolvingId()).orElse(null));
+		problemSolvingColumn.setName(problemSolvingColumnBean.getName());
+		problemSolvingColumn.setType(problemSolvingColumnBean.getType());
+		problemSolvingColumn.setInputOutput(problemSolvingColumnBean.getInputOutput());
 
 		return problemSolvingColumnRepository.save(problemSolvingColumn);
 	}

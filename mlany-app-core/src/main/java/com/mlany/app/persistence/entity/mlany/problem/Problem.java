@@ -35,9 +35,6 @@ public class Problem extends MlanyEntity implements Beanable<ProblemBean> {
 	@Column(name = "NAME", length = 50, nullable = false)
 	private String name;
 
-	@Column(name = "TYPE", length = 50, nullable = true)
-	private String type;
-
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "linkedProblem", orphanRemoval = false)
 	private List<Dataset> linkedDatasets = new ArrayList<>();
 
@@ -56,7 +53,6 @@ public class Problem extends MlanyEntity implements Beanable<ProblemBean> {
 		ProblemBean bean = new ProblemBean();
 		bean.setId(getId());
 		bean.setName(getName());
-		bean.setType(getType());
 		bean.setProblemSolvings(Beanables.toBeanList(getProblemSolvings()));
 		bean.setDeployedModelFromTraining(
 				getDeployedModelFromTraining() != null ? getDeployedModelFromTraining().toBean() : null);

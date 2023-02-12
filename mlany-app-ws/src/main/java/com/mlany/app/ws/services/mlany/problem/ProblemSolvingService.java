@@ -9,18 +9,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mlany.app.ws.services.mlany.model.ModelTrainingService;
 import com.mlany.app.persistence.entity.enumeration.common.ColumnInputOutputEnum;
+import com.mlany.app.persistence.entity.enumeration.common.ColumnTypeEnum;
 import com.mlany.app.persistence.entity.enumeration.model.ModelTrainingStatusEnum;
 import com.mlany.app.persistence.entity.enumeration.problem.ProblemSolvingStatusEnum;
-import com.mlany.app.persistence.entity.mlany.dataset.DatasetColumn;
+import com.mlany.app.persistence.entity.enumeration.problem.ProblemSolvingTypeEnum;
 import com.mlany.app.persistence.entity.mlany.model.ModelTraining;
 import com.mlany.app.persistence.entity.mlany.problem.Problem;
 import com.mlany.app.persistence.entity.mlany.problem.ProblemSolving;
+import com.mlany.app.persistence.entity.mlany.problem.ProblemSolvingColumn;
 import com.mlany.app.persistence.repository.mlany.dataset.DatasetRepository;
 import com.mlany.app.persistence.repository.mlany.problem.ProblemRepository;
 import com.mlany.app.persistence.repository.mlany.problem.ProblemSolvingRepository;
 import com.mlany.app.ws.bean.mlany.problem.ProblemSolvingBean;
+import com.mlany.app.ws.services.mlany.model.ModelTrainingService;
 
 @Service
 public class ProblemSolvingService {
@@ -61,13 +63,11 @@ public class ProblemSolvingService {
 		// Save entity to generate id
 		problemSolvingRepository.save(problemSolving);
 
-		// Make a copy of dataset's input and output columns
-		List<DatasetColumn> inputOutputDatasetColumns = problemSolving.getDataset().getDatasetContentInfo().getColumns()
-				.stream().filter(column -> ColumnInputOutputEnum.INPUT.name().equals(column.getInputOutput())
-						|| ColumnInputOutputEnum.OUTPUT.name().equals(column.getInputOutput()))
-				.toList();
-		inputOutputDatasetColumns.forEach(datasetColumn -> problemSolving.getProblemSolvingColumns()
-				.add(problemSolvingColumnService.createCopyFromDatasetColumn(problemSolving, datasetColumn)));
+		// Save input and output columns
+		problemSolvingBean.getProblemSolvingColumns().forEach(contextColumn -> {
+			contextColumn.setProblemSolvingId(problemSolving.getId());
+			problemSolving.getProblemSolvingColumns().add(problemSolvingColumnService.save(contextColumn));
+		});
 
 		// Save entity with associated columns
 		problemSolvingRepository.save(problemSolving);
@@ -91,9 +91,11 @@ public class ProblemSolvingService {
 
 		if (optProblemSolving.isPresent()) {
 			ProblemSolving problemSolving = optProblemSolving.get();
+			ProblemSolvingTypeEnum problemSolvingType = getProblemSolvingType(problemSolving.getId());
 
 			// Generate various model training instances
-			List<ModelTraining> modelTrainings = modelTrainingService.generateTrainings(problemSolving);
+			List<ModelTraining> modelTrainings = modelTrainingService.generateTrainings(problemSolving,
+					problemSolvingType);
 			problemSolving.setModelTrainings(modelTrainings);
 			problemSolvingRepository.save(problemSolving);
 
@@ -109,6 +111,35 @@ public class ProblemSolvingService {
 			}
 			this.solve(problemSolvingId, problem, attemptsLeft - 1);
 		}
+	}
+
+	private ProblemSolvingTypeEnum getProblemSolvingType(Long problemSolvingId) {
+		ProblemSolvingTypeEnum problemSolvingType = ProblemSolvingTypeEnum.MULTI_CLASSIFICATION;
+
+		// Retrieve columns associated to given problem solving
+		List<ProblemSolvingColumn> problemSolvingColumns = problemSolvingColumnService
+				.getColumnsByProblemSolvingId(problemSolvingId);
+
+		// Retrieve type from designated output column
+		Optional<ProblemSolvingColumn> optionalOutputColumn = problemSolvingColumns.stream()
+				.filter(problemSolvingColumn -> ColumnInputOutputEnum.OUTPUT.name()
+						.equals(problemSolvingColumn.getInputOutput()))
+				.findFirst();
+		if (optionalOutputColumn.isPresent()) {
+			// Determine problem solving type from output column type
+			String outputColumnType = optionalOutputColumn.get().getType();
+
+			ColumnTypeEnum outputColumnTypeEnum = ColumnTypeEnum.valueOf(outputColumnType);
+			switch (outputColumnTypeEnum) {
+			case NUMBER:
+				problemSolvingType = ProblemSolvingTypeEnum.REGRESSION;
+				break;
+			default:
+				break;
+			}
+		}
+
+		return problemSolvingType;
 	}
 
 	@Transactional

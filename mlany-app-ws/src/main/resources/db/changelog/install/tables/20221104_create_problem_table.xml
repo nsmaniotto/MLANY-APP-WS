@@ -7,7 +7,6 @@
 				 <constraints primaryKey="true" primaryKeyName="PK_PROBLEM" nullable="false"/>
 			</column>
 			<column name="NAME" type="VARCHAR2(50 CHAR)"/>
-			<column name="TYPE" type="VARCHAR2(50 CHAR)"/>
 			<column name="END_POINT" type="VARCHAR2(20 CHAR)"/>
 		</createTable>
 	</changeSet>

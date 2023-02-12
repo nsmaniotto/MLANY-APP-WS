@@ -20,12 +20,14 @@ public class ProblemSolvingBean implements Serializable, AbstractBean {
 	private Long id;
 	private Long problemId;
 	private Long datasetId;
+	private List<ProblemSolvingColumnBean> problemSolvingColumns;
 	private String status;
 	private List<ModelTrainingBean> modelTrainings;
 
 	@Override
 	public String toString() {
 		return "ProblemSolvingBean [id=" + id + ", status=" + status + ", problemId=" + problemId + ", datasetId="
-				+ datasetId + ", modelTrainings=" + modelTrainings + "]";
+				+ datasetId + ", problemSolvingColumns=" + problemSolvingColumns + ", modelTrainings=" + modelTrainings
+				+ "]";
 	}
 }
