@@ -12,6 +12,7 @@
 			<column name="NAME" type="VARCHAR2(150 CHAR)">
 				 <constraints nullable="false"/>
 			</column>
+			<column name="BYTE_SIZE" type="NUMBER"/>
 		</createTable>
 	</changeSet>
 

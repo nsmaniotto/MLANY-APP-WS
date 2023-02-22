@@ -45,6 +45,9 @@ public class FilerService {
 		File dest = new File(filePath);
 		file.transferTo(dest);
 
+		fileInfo.setByteSize(dest.length());
+		fileInfoRepository.save(fileInfo);
+
 		return fileInfo;
 	}
 
@@ -121,11 +124,19 @@ public class FilerService {
 
 	public Boolean updateFileContent(Long fileInfoId, byte[] content) throws IOException {
 		logger.info("Updating fileInfo#{}", fileInfoId);
-		File outputFile = getFile(fileInfoId);
+		Optional<FileInfo> optionalFileInfo = fileInfoRepository.findById(fileInfoId);
+		File outputFile = null;
 
-		if (outputFile != null) {
-			try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
-				outputStream.write(content);
+		if (optionalFileInfo.isPresent()) {
+			FileInfo fileInfo = optionalFileInfo.get();
+			outputFile = getFile(fileInfo);
+
+			if (outputFile != null) {
+				try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
+					outputStream.write(content);
+					fileInfo.setByteSize(outputFile.length());
+					fileInfoRepository.save(fileInfo);
+				}
 			}
 		}
 

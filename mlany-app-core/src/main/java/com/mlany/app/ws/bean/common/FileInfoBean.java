@@ -18,9 +18,10 @@ public class FileInfoBean implements Serializable, AbstractBean {
 	private Long id;
 	private String path;
 	private String name;
+	private Long byteSize;
 
 	@Override
 	public String toString() {
-		return "FileInfoBean [id=" + id + ", path=" + path + ", name=" + name + "]";
+		return "FileInfoBean [id=" + id + ", path=" + path + ", name=" + name + ", byteSize=" + byteSize + "]";
 	}
 }

@@ -41,12 +41,16 @@ public class FileInfo implements AbstractEntity, Beanable<FileInfoBean> {
 	@Column(name = "NAME", length = 150, nullable = false)
 	private String name;
 
+	@Column(name = "BYTE_SIZE", nullable = false)
+	private Long byteSize;
+
 	@Override
 	public FileInfoBean toBean() {
 		FileInfoBean bean = new FileInfoBean();
 		bean.setId(getId());
 		bean.setPath(getPath());
 		bean.setName(getName());
+		bean.setByteSize(getByteSize());
 		return bean;
 	}
 
